@@ -2,11 +2,15 @@
 #include "IRenderable.hpp"
 #include "macroutils.hpp"
 #include "textures.hpp"
-#define TEXTURE_TILES Grass
-#define COLOR_TILES Skyblue
-#define SPECIAL_TILES PlayerSpawn
-#define TILES TEXTURE_TILES, COLOR_TILES, SPECIAL_TILES
+#define TILE_COORD_PAIRS_X(M) \
+M(Luckyblock, 1, 1) \
+M(Grass, 2, 6) \
+M(CloudGuy, 5, 0)
 typedef SDL_Point TileCoordinates;
+#define TextureCoordPairs(n, x, y) inline auto mario_tile_##n = TileCoordinates{x, y};
+
+TILE_COORD_PAIRS_X(TextureCoordPairs)
+
 struct SpriteSheet {
     Image IMG;
     SpriteSheet(SDL_Texture* Tex)
