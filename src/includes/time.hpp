@@ -1,4 +1,3 @@
-#include "macroutils.hpp"
 #include <SDL2/SDL_timer.h>
 
 namespace Timer {

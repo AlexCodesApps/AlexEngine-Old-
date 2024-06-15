@@ -3,9 +3,9 @@
 #include "IRenderable.hpp"
 
 namespace GameWindow {
-    static constexpr auto Width = 800;
-    static constexpr auto Height = 600;
-    static constexpr auto Scale = 1;
+    constexpr auto Width = 800;
+    constexpr auto Height = 600;
+    constexpr auto Scale = 1;
     static constexpr SDL_Color FlushColor = {255, 0, 0, 255};
     extern void SetFlags(Uint32);
     extern void Init();

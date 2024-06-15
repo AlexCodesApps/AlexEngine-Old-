@@ -3,14 +3,16 @@
 #include "includes/gamewindow.hpp"
 #include "includes/textures.hpp"
 #include "includes/time.hpp"
+#include "includes/tiles.hpp"
 #include <print>
 
 int main() {
     GameWindow::Init();
-    auto a = RenderableEntity(Image(Texture::CreateMonoTexture(GameWindow::GetRenderer(), {0, 255, 0, 255})), {16, 16, 36, 30});
     if (!Texture::LoadAll(GameWindow::GetRenderer())) {
         return -1;
     };
+    Tiles::Init();
+    RenderableEntity a = RenderableEntity(Tiles::TestSheet.Get({1, 0}), {20, 20, 40, 40});
     DEBUG_LOG("Gamewindow Initialized");
     while (GameWindow::IsRunning()) {
         GameWindow::DrawSprite(a);
