@@ -6,7 +6,7 @@ namespace GameWindow {
     constexpr auto Width = 800;
     constexpr auto Height = 600;
     constexpr auto Scale = 1;
-    static constexpr SDL_Color FlushColor = {255, 0, 0, 255};
+    static constexpr SDL_Color FlushColor = {0, 0, 255, 255};
     extern void SetFlags(Uint32);
     extern void Init();
     extern void DrawBuffer();

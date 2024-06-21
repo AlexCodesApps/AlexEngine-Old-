@@ -2,7 +2,7 @@
 #include "SDL2/SDL_render.h"
 
 #define TEXTURE_LIST \
-white, circle, testspritesheet, playerplaceholder
+white, circle, testspritesheet, playerplaceholder, playerplaceholder_spritesheet
 namespace Texture {
     enumerate(Asset, TEXTURE_LIST)
     extern bool LoadAll(SDL_Renderer *);

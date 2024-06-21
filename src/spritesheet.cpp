@@ -1,5 +1,5 @@
 #include "includes/textures.hpp"
-#include "includes/tiles.hpp"
+#include "includes/spritesheet.hpp"
 
 SpriteSheet::SpriteSheet(SDL_Texture * Tex, int _TileSize, int _Margin)
 : IMG(Tex), TileSize(_TileSize), Margin(_Margin) {
@@ -19,20 +19,3 @@ Image SpriteSheet::Get(SpriteSheet::Coordinates Coords) {
 #define TILES_X(M) \
 M(Grass, {1, 0}, testspritesheet) \
 M(LeftGrass, {0, 0}, testspritesheet)
-
-namespace Tiles {
-    SpriteSheet TestSheet;
-    void Init() {
-        TestSheet = SpriteSheet(Texture::Get(Texture::Asset::testspritesheet));
-    }
-
-    enum Type {
-        Empty,
-        Grass,
-        LGrass,
-        RGrass,
-        Dirt,
-        LDirt,
-        RDirt
-    };
-}

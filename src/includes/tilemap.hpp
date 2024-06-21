@@ -1,5 +1,5 @@
 #pragma once
-#include "tiles.hpp"
+#include "spritesheet.hpp"
 #include <vector>
 
 namespace Tiles {

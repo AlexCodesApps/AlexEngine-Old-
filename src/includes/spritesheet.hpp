@@ -13,8 +13,3 @@ struct SpriteSheet {
     SpriteSheet(SDL_Texture*, int = 16, int = 0);
     Image Get(Coordinates);
 };
-
-namespace Tiles {
-    extern SpriteSheet TestSheet;
-    extern void Init();
-}

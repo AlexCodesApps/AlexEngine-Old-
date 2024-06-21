@@ -1,9 +1,4 @@
 #include "includes/gamewindow.hpp"
-#include "SDL2/SDL_keyboard.h"
-#include "SDL2/SDL_rect.h"
-#include "SDL2/SDL_render.h"
-#include "SDL2/SDL_scancode.h"
-#include "SDL2/SDL_stdinc.h"
 
 namespace GameWindow {
     const Uint8 * KeyboardState = SDL_GetKeyboardState(NULL);
@@ -26,7 +21,7 @@ namespace GameWindow {
         SDL_RenderClear(Renderer);
     }
     void SetDrawColor(SDL_Color Color) {
-        SDL_SetRenderDrawColor(Renderer, Color.r, Color.b, Color.g, Color.a);
+        SDL_SetRenderDrawColor(Renderer, Color.r, Color.g, Color.b, Color.a);
     }
     void DrawSprite(const RenderableEntity& Sprite) {
         SDL_RenderCopyF(Renderer, Sprite.IMG.Texture, &Sprite.IMG.Dimensions, &Sprite.Body);
