@@ -4,6 +4,7 @@
 #include "includes/textures.hpp"
 #include "includes/time.hpp"
 #include "includes/tiles.hpp"
+#include "includes/player.hpp"
 #include <print>
 
 int main() {
@@ -12,10 +13,10 @@ int main() {
         return -1;
     };
     Tiles::Init();
-    RenderableEntity a = RenderableEntity(Tiles::TestSheet.Get({1, 0}), {20, 20, 40, 40});
     DEBUG_LOG("Gamewindow Initialized");
+    Player::Load();
     while (GameWindow::IsRunning()) {
-        GameWindow::DrawSprite(a);
+        Player::Draw();
         GameWindow::PollEvents();
         GameWindow::DrawBuffer();
     }
