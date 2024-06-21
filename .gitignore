@@ -4,3 +4,4 @@
 .zed
 compile_commands.json
 Makefile
+main
