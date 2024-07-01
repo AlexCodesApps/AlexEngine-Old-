@@ -1,4 +1,5 @@
 #include "includes/gamewindow.hpp"
+#include "SDL2/SDL_render.h"
 
 namespace GameWindow {
     const Uint8 * KeyboardState = SDL_GetKeyboardState(NULL);
@@ -11,9 +12,10 @@ namespace GameWindow {
     }
     void Init() {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-        Window = SDL_CreateWindow("Title", 0, 0, Width, Height, WindowFlags);
+        Window = SDL_CreateWindow("Title", 0, 0, LiteralWidth, LiteralHeight, WindowFlags);
         Renderer = SDL_CreateRenderer(Window, -1, 0);
         SDL_RenderSetVSync(Renderer, true);
+        SDL_RenderSetLogicalSize(Renderer, LiteralWidth / Scale, LiteralHeight / Scale);
     }
     void DrawBuffer() {
         SDL_RenderPresent(Renderer);
@@ -26,8 +28,11 @@ namespace GameWindow {
     void DrawSprite(const RenderableEntity& Sprite) {
         SDL_RenderCopyF(Renderer, Sprite.IMG.Texture, &Sprite.IMG.Dimensions, &Sprite.Body);
     }
-    SDL_FPoint GetInputAxis() {
-        SDL_FPoint ReturnAxis = {0};
+    void DrawSprite(const SDL_FRect& Body, const Image& IMG) {
+        SDL_RenderCopyF(Renderer, IMG.Texture, &IMG.Dimensions, &Body);
+    }
+    Vec2 GetInputAxis() {
+        Vec2 ReturnAxis = {0};
         if (KeyboardState[SDL_SCANCODE_UP]) ReturnAxis.y -= 1;
         if (KeyboardState[SDL_SCANCODE_DOWN]) ReturnAxis.y += 1;
         if (KeyboardState[SDL_SCANCODE_LEFT]) ReturnAxis.x -= 1;

@@ -2,6 +2,7 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_image.h>
 #include <cstddef>
+#include "vec2.hpp"
 
 struct Image {
     SDL_Texture * Texture;
@@ -21,7 +22,7 @@ struct RenderableEntity {
     RenderableEntity() = default;
     RenderableEntity(Image _IMG, SDL_FRect _Body)
     : IMG(_IMG), Body(_Body) {}
-    SDL_FRect TranslateLocation(const SDL_FPoint& NewLoc) {
+    SDL_FRect TranslateLocation(Vec2 NewLoc) {
         return SDL_FRect {
             .x = NewLoc.x,
             .y = NewLoc.y,
@@ -29,24 +30,29 @@ struct RenderableEntity {
             .h = Body.h
         };
     }
-    void SetLocation(const SDL_FPoint& NewLoc) {
+    void SetLocation(Vec2 NewLoc) {
         Body.x = NewLoc.x;
         Body.y = NewLoc.y;
     }
-    void ChangeLocation(const SDL_FPoint& ChangeLoc) {
+    void ChangeLocation(Vec2 ChangeLoc) {
         Body.x += ChangeLoc.x;
         Body.y += ChangeLoc.y;
     }
 };
 
-inline SDL_FPoint operator+(const SDL_FPoint& a, const SDL_FPoint& b) {
+inline Vec2 operator+(Vec2 a, Vec2 b) {
     return {a.x + b.x, a.y + b.y};
 }
 
-inline SDL_FPoint operator-(const SDL_FPoint& a, const SDL_FPoint& b) {
+inline Vec2 operator-(Vec2 a, Vec2 b) {
     return {a.x - b.x, a.y - b.y};
 }
 
-inline SDL_FPoint operator+(const SDL_FPoint& a, const SDL_FRect& b) {
+inline Vec2 operator+(Vec2 a, const SDL_FRect& b) {
     return {a.x + b.x, a.y + b.y};
+}
+
+inline SDL_FRect& SDL_FRectSetXY(SDL_FRect& s, Vec2 p) {
+    s.x = p.x; s.y = p.y;
+    return s;
 }

@@ -17,6 +17,11 @@ void Animator::Update() {
     }
 }
 
+void Animator::Update(RenderableEntity& e) {
+    Update();
+    e.IMG = GetFrame();
+}
+
 Image Animator::GetFrame() {
     return Data.GetFrame();
 }

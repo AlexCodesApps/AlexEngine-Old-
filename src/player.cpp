@@ -1,5 +1,4 @@
 #include "includes/player.hpp"
-#include "SDL2/SDL_rect.h"
 #include "includes/IRenderable.hpp"
 #include "includes/animation.hpp"
 #include "includes/gamewindow.hpp"
@@ -7,54 +6,88 @@
 #include "includes/spritesheet.hpp"
 
 namespace Player {
-    constexpr auto Scale = 100;
-    using Coord2 = std::pair<SpriteSheet::Coordinates, SpriteSheet::Coordinates>;
-    constexpr Coord2 LAnim{{0, 0}, {1, 0}};
-    constexpr Coord2 RAnim{{0, 1}, {1, 1}};
-    Animator Anim;
-    SDL_FPoint PlayerPosition{0,0};
+    constexpr auto Scale = 16;
+    using FrameCoords = std::pair<SpriteSheet::Coordinates, SpriteSheet::Coordinates>;
+    constexpr FrameCoords LeftIdle{{0, 0}, {1, 0}};
+    constexpr FrameCoords RightIdle{{0, 1}, {1, 1}};
+    constexpr FrameCoords LeftWalk{{0, 2}, {1, 2}};
+    constexpr FrameCoords RightWalk{{0, 3}, {1, 3}};
+    Animator Animation;
+    Vec2 PlayerPosition{0,0};
+    namespace State {
+        Action CurrentAction = Action::Idling;
+        Direction CurrentDirection = Direction::Left;
+    }
     namespace Camera {
-        SDL_FPoint GetRelativePosition(SDL_FPoint ExactPostion)
-        { return (ExactPostion - PlayerPosition) + SDL_FPoint{(GameWindow::Width - Scale)/2.0f, (GameWindow::Height - Scale)/2.0f}; }
+        Vec2 GetRelativePosition(SDL_FRect ExactPostion) {
+            auto& [x, y, w, h] = ExactPostion;
+            return {
+                x - PlayerPosition.x + GameWindow::HalfWidth - w/2.0f,
+                y - PlayerPosition.y + GameWindow::HalfHeight - h/2.0f,
+            };
+        }
     }
     void Load() {
-        Anim = Animator{
+        Animation = Animator{
             .Data = {
                 .Sheet = SpriteSheet(Texture::Get(Texture::Asset::playerplaceholder_spritesheet)),
                 .FrameCoords = {
-                    LAnim.first,
-                    LAnim.second
+                    LeftIdle.first,
+                    LeftIdle.second
                 }
             },
             .MSWait = 500,
         };
     }
-    const SDL_FPoint& GetPosition() {
+    Vec2 GetPosition() {
         return PlayerPosition;
     }
-    void ChangePosition(const SDL_FPoint& NewPoint) {
+    void SetPosition(Vec2 NewPoint) {
+        PlayerPosition = NewPoint;
+    }
+    void ChangePosition(Vec2 NewPoint) {
         PlayerPosition = PlayerPosition + NewPoint;
     }
-    void ChangeDirection(Direction Dir) {
-        auto& p = (Dir ==  Direction::Left) ? LAnim : RAnim;
-        auto& v = Anim.GetCoords();
-        v[0] = p.first;
-        v[1] = p.second;
+    void UpdateAnimation() {
+        auto& Frames =
+            (State::CurrentDirection == Direction::Left) ?
+                (State::CurrentAction == Action::Idling) ?
+                    LeftIdle
+                    : LeftWalk
+                : (State::CurrentAction == Action::Idling) ?
+                    RightIdle
+                    : RightWalk;
+        auto& CurrentFrames = Animation.GetCoords();
+        CurrentFrames[0] = Frames.first;
+        CurrentFrames[1] = Frames.second;
     }
     void Draw() {
-        GameWindow::DrawSprite(RenderableEntity(Anim.GetFrame(), {
+        static auto Entity = RenderableEntity({}, {
             .x = (GameWindow::Width - Scale)/2.0f,
             .y = (GameWindow::Height - Scale)/2.0f,
             .w = Scale,
             .h = Scale
-        }));
+        });
+        Entity.IMG = Animation.GetFrame();
+        GameWindow::DrawSprite(Entity);
     }
     void Update() {
-        Anim.Update();
+        Animation.Update();
         auto axis = GameWindow::GetInputAxis();
         if (axis.x != 0) {
-            Player::ChangeDirection((axis.x < 0) ? Player::Direction::Left : Player::Direction::Right);
-            PlayerPosition.x += axis.x;
+            State::CurrentDirection = (axis.x < 0) ?
+                Direction::Left
+                : Direction::Right;
+            State::CurrentAction = Action::Walking;
+            Animation.MSWait = 250;
+            PlayerPosition = PlayerPosition + Vec2(
+                axis.x * Timer::DeltaTime() * Speed, 0
+            );
         }
+        else {
+            State::CurrentAction = Action::Idling;
+            Animation.MSWait = 500;
+        }
+        UpdateAnimation();
     }
 }

@@ -1,4 +1,3 @@
-#include "includes/textures.hpp"
 #include "includes/spritesheet.hpp"
 
 SpriteSheet::SpriteSheet(SDL_Texture * Tex, int _TileSize, int _Margin)

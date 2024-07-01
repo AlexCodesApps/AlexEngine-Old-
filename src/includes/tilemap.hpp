@@ -1,12 +1,25 @@
 #pragma once
+#define DEBUG
+#include "../tilemap/metatile.hpp"
+#include "macroutils.hpp"
 #include "spritesheet.hpp"
-#include <vector>
+#include <bitset>
 
-namespace Tiles {
-    class IMap {
-        size_t size;
-        std::vector<Uint8> Map;
-        SpriteSheet& S;
-        IMap(const SpriteSheet&);
+#define TILEMAP_LIST world1
+
+namespace Tile {
+    enumerate_macro(Maps, TILEMAP_LIST);
+    struct Data {
+        enum class Flags : Uint8 {
+            Air = BITOFFSET(0),
+            Ghost = BITOFFSET(1),
+            Dangerous = BITOFFSET(2)
+        };
+        SpriteSheet::Coordinates Asset;
+        std::bitset<ENUM_SIZE(Flags) * BYTE_SIZE> Flags;
     };
+    extern void LoadAssets();
+    extern MetaTile::TextureData GetTextureData(std::string);
+    extern MetaTile::TilemapData GetTilemapData(std::string);
+    extern Data GetTileData(Maps, size_t id);
 }

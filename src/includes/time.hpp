@@ -1,3 +1,4 @@
+#pragma once
 #include <SDL2/SDL_timer.h>
 
 namespace Timer {
@@ -12,7 +13,9 @@ namespace Timer {
             return SDL_GetTicks64() - StartingTime;
         }
         inline float ElapsedTime() const {
-            return static_cast<float>(ElapsedTime())/1000.0f;
+            return static_cast<float>(ElapsedTicks())/1000.0f;
         }
     };
+    extern void UpdateDeltaTime();
+    extern float DeltaTime();
 }

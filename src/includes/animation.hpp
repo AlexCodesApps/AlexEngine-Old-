@@ -17,6 +17,7 @@ struct Animator {
     Timer::Instance Timer;
 public:
     void Update();
+    void Update(RenderableEntity&);
     std::vector<SpriteSheet::Coordinates>& GetCoords();
     Image GetFrame();
 };
