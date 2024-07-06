@@ -1,11 +1,24 @@
 #pragma once
+#define DO_PRAGMA(x) _Pragma(#x)
+#ifdef __clang__
+#define PRAGMA_DIAGNOSTIC(x) DO_PRAGMA(clang diagnostic x)
+#elifdef __GNUC__
+#define PRAGMA_DIAGNOSTIC(x) DO_PRAGMA(GCC diagnostic x)
+#endif
+#define WARNING_IGNORE(type) \
+PRAGMA_DIAGNOSTIC(push) \
+PRAGMA_DIAGNOSTIC(ignored #type) \
+WARNING_IGNORE_BODY
+#define WARNING_IGNORE_BODY(...) \
+__VA_ARGS__ \
+PRAGMA_DIAGNOSTIC(pop)
 #include <climits>
+#include <type_traits>
 #define EXPAND(...) EXPAND4(EXPAND4(EXPAND4(EXPAND4(__VA_ARGS__))))
 #define EXPAND4(...) EXPAND3(EXPAND3(EXPAND3(EXPAND3(__VA_ARGS__))))
 #define EXPAND3(...) EXPAND2(EXPAND2(EXPAND2(EXPAND2(__VA_ARGS__))))
 #define EXPAND2(...) EXPAND1(EXPAND1(EXPAND1(EXPAND1(__VA_ARGS__))))
 #define EXPAND1(...) __VA_ARGS__
-
 #define PARENS ()
 #define for_each_macro_h(macro, a, ...) macro(a) \
 __VA_OPT__(for_each_macro_a PARENS (macro, __VA_ARGS__))
@@ -40,11 +53,13 @@ __VA_OPT__(, map_macro_a PARENS (macro, __VA_ARGS__))
     DEBUG_COLOR_PRINT(RED_C, __VA_ARGS__); \
     std::terminate(); \
 } while(0)
+#define DEBUG_EXPAND(...) __VA_ARGS__
 #else
 #define DEBUG_COLOR_PRINT(...)
 #define DEBUG_LOG(...)
 #define DEBUG_WARN(...)
 #define DEBUG_ERROR(...)
+#define DEBUG_EXPAND(...)
 #endif /* DEBUG */
 #define concat_macro(x, y) x ## y
 #define expand_concat_macro(x, y) concat_macro(x,y)
@@ -57,16 +72,6 @@ __VA_OPT__(, map_macro_a PARENS (macro, __VA_ARGS__))
 #define lambda_macro(...) [=](__VA_OPT__(map_macro(lambda_arg_macro_h, __VA_ARGS__))) lambda_body_macro_h
 #define stringify_macro(x) #x
 #define BYTE_SIZE CHAR_BIT
-#define DO_PRAGMA(x) _Pragma(#x)
-#ifdef __clang__
-#define PRAGMA_DIAGNOSTIC(x) DO_PRAGMA(clang diagnostic x)
-#elifdef __GNUC__
-#define PRAGMA_DIAGNOSTIC(x) DO_PRAGMA(GCC diagnostic x)
-#endif
-#define WARNING_IGNORE(type) \
-PRAGMA_DIAGNOSTIC(push) \
-PRAGMA_DIAGNOSTIC(ignored #type) \
-WARNING_IGNORE_BODY
-#define WARNING_IGNORE_BODY(...) \
-__VA_ARGS__ \
-PRAGMA_DIAGNOSTIC(pop)
+#define list_size_macro(...) EXPAND(list_size_macro_h(__VA_ARGS__))
+#define list_size_macro_h(x, ...) (1 __VA_OPT__( + list_size_macro_a PARENS (__VA_ARGS__)))
+#define list_size_macro_a() list_size_macro_h

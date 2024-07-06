@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
-#include "IRenderable.hpp"
+#include "renderable.hpp"
 
 namespace GameWindow {
     constexpr auto LiteralWidth = 800;
@@ -17,6 +17,7 @@ namespace GameWindow {
     extern void SetDrawColor(SDL_Color);
     extern void DrawSprite(const RenderableEntity&);
     extern void DrawSprite(const SDL_FRect&, const Image&);
+    extern bool IsKeyPressed(SDL_Scancode);
     extern Vec2 GetInputAxis();
     extern SDL_Renderer * GetRenderer();
     extern void PollEvents();

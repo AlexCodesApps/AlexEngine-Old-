@@ -1,0 +1,4 @@
+1. Learn CMake, Get Of Off Make <- Current ✓
+2. Make A Testworld Using The New Tilemaps
+    2a. Finish The File Serialization System, Use The File In src/tilemaps/world1.mt
+    2b. Redo The Texture System In A Much More Sane Way

@@ -1,8 +1,10 @@
 #include "includes/gamewindow.hpp"
 #include "SDL2/SDL_render.h"
+#include "SDL2/SDL_video.h"
 
 namespace GameWindow {
-    const Uint8 * KeyboardState = SDL_GetKeyboardState(NULL);
+    int KeyBoardLength;
+    const Uint8 * KeyboardState = SDL_GetKeyboardState(&KeyBoardLength);
     SDL_Renderer * Renderer;
     SDL_Window * Window;
     Uint32 WindowFlags;
@@ -26,13 +28,17 @@ namespace GameWindow {
         SDL_SetRenderDrawColor(Renderer, Color.r, Color.g, Color.b, Color.a);
     }
     void DrawSprite(const RenderableEntity& Sprite) {
-        SDL_RenderCopyF(Renderer, Sprite.IMG.Texture, &Sprite.IMG.Dimensions, &Sprite.Body);
+        SDL_RenderCopyF(Renderer, Asset::GetTexture(Sprite.IMG.ID), &Sprite.IMG.Dimensions, &Sprite.Body);
     }
     void DrawSprite(const SDL_FRect& Body, const Image& IMG) {
-        SDL_RenderCopyF(Renderer, IMG.Texture, &IMG.Dimensions, &Body);
+        SDL_RenderCopyF(Renderer, Asset::GetTexture(IMG.ID), &IMG.Dimensions, &Body);
+    }
+    bool IsKeyPressed(SDL_Scancode Key) {
+        if (Key >= KeyBoardLength) return false;
+        return KeyboardState[Key];
     }
     Vec2 GetInputAxis() {
-        Vec2 ReturnAxis = {0};
+        Vec2 ReturnAxis{};
         if (KeyboardState[SDL_SCANCODE_UP]) ReturnAxis.y -= 1;
         if (KeyboardState[SDL_SCANCODE_DOWN]) ReturnAxis.y += 1;
         if (KeyboardState[SDL_SCANCODE_LEFT]) ReturnAxis.x -= 1;
@@ -52,6 +58,8 @@ namespace GameWindow {
         return _IsRunning;
     }
     void Destroy() {
+        SDL_DestroyWindow(Window);
+        SDL_DestroyRenderer(Renderer);
         SDL_Quit();
     }
 }

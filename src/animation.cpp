@@ -1,5 +1,4 @@
 #include "includes/animation.hpp"
-
 Image AnimationData::GetFrame() {
     Image img = Sheet.Get(FrameCoords[FrameIndex]);
     return img;

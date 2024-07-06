@@ -1,29 +1,27 @@
-#include "includes/macroutils.hpp"
 #define DEBUG
-#include "includes/spritesheet.hpp"
-#include "includes/gamewindow.hpp"
-#include "includes/textures.hpp"
-#include "includes/time.hpp"
+#include "includes/renderable.hpp"
+#include "includes/sprites.hpp"
+#include "includes/macroutils.hpp"
 #include "includes/player.hpp"
+#include "includes/gamewindow.hpp"
+#include "includes/assets.hpp"
+#include "includes/time.hpp"
 
 int main() {
     GameWindow::Init();
-    if (!Texture::LoadAll(GameWindow::GetRenderer())) {
+    if (!Asset::LoadAll(GameWindow::GetRenderer())) {
         GameWindow::Destroy();
         return -1;
     };
     DEBUG_LOG("Gamewindow Initialized");
-    Player::Load();
-    auto sheet = SpriteSheet(Texture::Get(Texture::Asset::testspritesheet));
-    auto tex = sheet.Get({1, 0});
     while (GameWindow::IsRunning()) {
         Player::Update();
-        Player::Draw();
+        Sprite::DrawAll();
         GameWindow::PollEvents();
         GameWindow::DrawBuffer();
         Timer::UpdateDeltaTime();
     }
-    Texture::DestroyAll();
+    Asset::DestroyAll();
     GameWindow::Destroy();
     return 0;
 }

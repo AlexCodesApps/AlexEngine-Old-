@@ -11,7 +11,6 @@
 #include <fstream>
 
 namespace MetaTile {
-
     struct TextureData {
         using Coords = std::pair<size_t, size_t>;
         std::string Name;
@@ -20,7 +19,6 @@ namespace MetaTile {
         size_t tileoffset;
         std::unordered_map<size_t, Coords> CoordsMap;
     };
-
     struct TilemapData {
         std::string Name;
         std::string TextureDataName;
@@ -201,8 +199,8 @@ namespace MetaTile {
                 "<----------->\n" <<
                 "Name : " << m.Name << " | BaseTexture : " << m.TextureDataName << " | Width : " << m.w << " | Height : " << m.h
                 << "\nCoords" << std::endl;
-                for (int i = 0; i < m.h; i++) {
-                    for (int c = 0; c < m.w; c++) {
+                for (size_t i = 0; i < m.h; i++) {
+                    for (size_t c = 0; c < m.w; c++) {
                         std::cout << m.data[i * m.w + c] << ", ";
                     }
                     std::cout << std::endl;

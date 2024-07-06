@@ -4,12 +4,12 @@
 
 namespace Player {
     enum class Direction {
-        Left,
-        Right
+        Left = 0,
+        Right = 1
     };
     enum class Action {
-        Idling,
-        Walking,
+        Idling = 0,
+        Walking = 1,
     };
     namespace State {
         extern Action CurrentAction;
@@ -19,11 +19,9 @@ namespace Player {
         extern Vec2 GetRelativePosition(SDL_FRect);
     }
     constexpr float Speed = 30.0f;
-    extern void Load();
     extern Vec2 GetPosition();
     extern void SetPosition(Vec2);
     extern void ChangePosition(Vec2);
     extern void UpdateAnimation();
-    extern void Draw();
     extern void Update();
 }
