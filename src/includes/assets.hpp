@@ -6,12 +6,13 @@
 #define MISC_IMAGES undefined, circle, white, Carl
 #define TILEMAPS world1
 #define IMAGES_ALL PLAYER_SPRITESHEET, TILES_SPRITESHEET, MISC_IMAGES
+#define UNKNOWN_IMAGE ::Asset::ImageID::undefined
 
 namespace Asset {
     enum class ImageID {
         IMAGES_ALL
     };
-    extern bool LoadAll(SDL_Renderer *);
-    extern SDL_Texture *GetTexture(ImageID);
-    extern void DestroyAll();
+    bool LoadAll(SDL_Renderer *);
+    SDL_Texture *GetTexture(ImageID);
+    void DestroyAll();
 }

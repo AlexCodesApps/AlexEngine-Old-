@@ -1,0 +1,11 @@
+Player Sprite Dims:
+    x_offset -> 2
+    y_offset -> 0
+    width -> 11
+    height -> 16
+    RectDims:
+        width -> 16
+        height -> 16
+Vec2 > SDL_FPoint
+To Be Replaced?
+    Rect <- SDL_FRect

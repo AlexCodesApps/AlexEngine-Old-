@@ -16,12 +16,12 @@ namespace Player {
         extern Direction CurrentDirection;
     };
     namespace Camera {
-        extern Vec2 GetRelativePosition(SDL_FRect);
+        Vec2 GetRelativePosition(SDL_FRect);
     }
     constexpr float Speed = 30.0f;
-    extern Vec2 GetPosition();
-    extern void SetPosition(Vec2);
-    extern void ChangePosition(Vec2);
-    extern void UpdateAnimation();
-    extern void Update();
+    Vec2 GetPosition();
+    void SetPosition(Vec2);
+    void ChangePosition(Vec2);
+    void UpdateAnimation();
+    void Update();
 }

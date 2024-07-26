@@ -1,4 +1,5 @@
 #include "includes/gamewindow.hpp"
+#include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_video.h"
 
@@ -13,7 +14,7 @@ namespace GameWindow {
         WindowFlags = flags;
     }
     void Init() {
-        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER);
         Window = SDL_CreateWindow("Title", 0, 0, LiteralWidth, LiteralHeight, WindowFlags);
         Renderer = SDL_CreateRenderer(Window, -1, 0);
         SDL_RenderSetVSync(Renderer, true);

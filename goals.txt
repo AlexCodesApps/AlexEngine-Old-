@@ -1,4 +1,8 @@
 1. Learn CMake, Get Of Off Make <- Current ✓
-2. Make A Testworld Using The New Tilemaps
-    2a. Finish The File Serialization System, Use The File In src/tilemaps/world1.mt
-    2b. Redo The Texture System In A Much More Sane Way
+2. Redo The Texture System In A Much More Sane Way ✓
+3. Get Hitboxes, And A Proper Collision System Working
+4. Implement Sprite Layering
+
+// ?. Make A Testworld Using The New Tilemaps
+//    ?a. Finish The File Serialization System, Use The File In src/tilemaps/world1.mt
+// The MetaTile System Has Been Scrapped, Might Try Again Later
