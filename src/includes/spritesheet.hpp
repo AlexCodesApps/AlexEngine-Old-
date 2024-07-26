@@ -1,16 +1,17 @@
 #pragma once
 #include "assets.hpp"
+#include "intalias.hpp"
 #include "renderable.hpp"
 #include <cstddef>
 
 struct SpriteSheet {
     typedef SDL_Point Coordinates;
     Image IMG;
-    int TileSize = 16;
-    int TileWidth;
-    int TileHeight;
-    int Margin = 0;
+    i32 TileSize = 16;
+    i32 TileWidth;
+    i32 TileHeight;
+    i32 Margin = 0;
     SpriteSheet() = default;
-    SpriteSheet(Asset::ImageID, int = 16, int = 0);
+    SpriteSheet(Asset::ImageID, i32 = 16, i32 = 0);
     Image Get(Coordinates);
 };

@@ -1,25 +1,26 @@
 #ifndef SPRITES_HPP
 #define SPRITES_HPP
+#include "intalias.hpp"
 #include "assets.hpp"
 #include "renderable.hpp"
 #include <cstddef>
 
 class Sprite {
 public:
-    using ID = size_t;
+    using ID = u64;
     static void DrawAll();
     RenderableEntity Entity;
     SDL_FRect Body = {0, 0, 16, 16};
-    float Scale = 1;
-    float ZOffset = 0;
-    Uint8 Layer = 0;
-    static Sprite& Get(ID);
+    f32 Scale = 1;
+    f32 ZOffset = 0;
+    u8 Layer = 0;
+    static Sprite& GetMut(ID);
+    static const Sprite& Get(ID);
     static void Remove(ID);
-    static ID New(SDL_FRect = {0, 0, 16, 16}, Image = Asset::ImageID::undefined, Uint8 = 0);
-    static bool Colliding(ID);
+    static ID New(SDL_FRect = {0, 0, 16, 16}, Image = Asset::ImageID::undefined, u8 = 0);
     static void DestroyAll();
+    static constexpr u64 NULL_ID = 0;
     class Auto {
-        static constexpr size_t NULL_ID = 0;
         ID Tag = NULL_ID;
         public:
         Auto();
@@ -29,9 +30,19 @@ public:
         Auto(const Auto&) = delete;
         Auto& operator=(const Auto&) = delete;
         Auto Clone();
-        Sprite& Get();
-        ID GetID();
+        Sprite& GetMut();
+        const Sprite& Get()
+;        ID ID();
     };
+    // class Ref {
+    //     ID Tag = NULL_ID;
+    // public:
+    //     Ref() = default;
+    //     Ref(ID);
+    //     Sprite& Get();
+    //     bool Valid();
+    //     operator bool();
+    // };
 };
 
 #endif /* SPRITES_HPP */

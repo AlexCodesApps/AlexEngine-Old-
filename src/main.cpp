@@ -7,7 +7,9 @@
 #include "includes/time.hpp"
 #include "includes/macros/debug.hpp"
 
-int main() {
+static_assert(sizeof(int) == sizeof(i32));
+
+i32 main() {
     GameWindow::Init();
     if (!Asset::LoadAll(GameWindow::GetRenderer())) {
         GameWindow::Destroy();

@@ -1,6 +1,6 @@
 #include "includes/spritesheet.hpp"
 
-SpriteSheet::SpriteSheet(Asset::ImageID ID, int _TileSize, int _Margin)
+SpriteSheet::SpriteSheet(Asset::ImageID ID, i32 _TileSize, i32 _Margin)
 : IMG(ID), TileSize(_TileSize), Margin(_Margin) {
     TileWidth = IMG.Dimensions.w / TileSize;
     TileHeight = IMG.Dimensions.h / TileSize;

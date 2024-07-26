@@ -18,7 +18,7 @@ namespace Player {
     namespace Camera {
         Vec2 GetRelativePosition(SDL_FRect);
     }
-    constexpr float Speed = 30.0f;
+    constexpr f32 Speed = 30.0f;
     Vec2 GetPosition();
     void SetPosition(Vec2);
     void ChangePosition(Vec2);

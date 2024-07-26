@@ -1,5 +1,6 @@
 #pragma once
 #include "SDL2/SDL_rect.h"
+#include "intalias.hpp"
 #include "vec2.hpp"
 
 namespace Tilemap {
@@ -7,7 +8,6 @@ namespace Tilemap {
     void Next();
     bool PositionIsSolid(Vec2);
     bool TilePositionIsSolid(SDL_Point);
-    int MapWorldF(float);
+    i32 MapWorldF(f32);
     SDL_Point MapWorldF(Vec2);
-    Vec2 CorrectPosition(Vec2, bool XSolid, bool YSolid);
 }

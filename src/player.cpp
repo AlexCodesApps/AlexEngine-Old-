@@ -36,8 +36,8 @@ namespace Player {
     }
     namespace Camera {
         Vec2 GetRelativePosition(SDL_FRect ExactPostion) {
-            auto& [x, y, w, h] = ExactPostion;
-            Sprite& PlayerSprite = Player.Get();
+            const auto& [x, y, w, h] = ExactPostion;
+            const Sprite& PlayerSprite = Player.Get();
             return {
                 x - PlayerSprite.Body.x + GameWindow::HalfWidth - w/2.0f,
                 y - PlayerSprite.Body.y + GameWindow::HalfHeight - h/2.0f,
@@ -45,13 +45,14 @@ namespace Player {
         }
     }
     Vec2 GetPosition() {
-        return {Player.Get().Body.x, Player.Get().Body.y};
+        auto PlayerSprite = Player.Get();
+        return {PlayerSprite.Body.x, PlayerSprite.Body.y};
     }
     void SetPosition(Vec2 NewPoint) {
-        SDL_FRectSetXY(Player.Get().Body, NewPoint);
+        SDL_FRectSetXY(Player.GetMut().Body, NewPoint);
     }
     void ChangePosition(Vec2 NewPoint) {
-        Sprite& PlayerSprite = Player.Get();
+        Sprite& PlayerSprite = Player.GetMut();
         PlayerSprite.Body.x += NewPoint.x;
         PlayerSprite.Body.y += NewPoint.y;
     }
@@ -60,7 +61,7 @@ namespace Player {
         auto& CurrentFrames = Animation.GetCoords();
         CurrentFrames[0] = Frames.first;
         CurrentFrames[1] = Frames.second;
-        Player.Get().Entity.IMG = Animation.GetFrame();
+        Player.GetMut().Entity.IMG = Animation.GetFrame();
     }
     void Update() {
         Animation.Update();
@@ -76,12 +77,12 @@ namespace Player {
             State::CurrentAction = Action::Idling;
             Animation.MSWait = 500;
         }
-        float IntermittentOffset = Timer::DeltaTime() * Speed;
-        SDL_FRect& PlayerBody = Player.Get().Body;
+        f32 IntermittentOffset = Timer::DeltaTime() * Speed;
+        SDL_FRect& PlayerBody = Player.GetMut().Body;
         Vec2 MovementAxis = GameWindow::GetInputAxis();
         Vec2 NewPosition = {
             PlayerBody.x + MovementAxis.x * IntermittentOffset,
-            PlayerBody.y + (MovementAxis.y + 0.8f) * IntermittentOffset
+            PlayerBody.y + (MovementAxis.y * 2 + 0.8f) * IntermittentOffset
         };
         const auto XCheck = Vec2{
             NewPosition.x,
@@ -91,8 +92,14 @@ namespace Player {
             PlayerBody.x,
             NewPosition.y
         };
-        if (!Hitbox::TilePositionColliding16(XCheck)) PlayerBody.x = NewPosition.x;
-        if (!Hitbox::TilePositionColliding16(YCheck)) PlayerBody.y = NewPosition.y;
+        constexpr Hitbox::Dimensions PlayerHitbox = {
+            .x = 2,
+            .y = 0,
+            .w = 11,
+            .h = 16
+        };
+        if (!Hitbox::TilePositionColliding(XCheck, PlayerHitbox)) PlayerBody.x = NewPosition.x;
+        if (!Hitbox::TilePositionColliding(YCheck, PlayerHitbox)) PlayerBody.y = NewPosition.y;
         UpdateAnimation();
     }
 }

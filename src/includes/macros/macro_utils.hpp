@@ -20,7 +20,8 @@ WARNING_IGNORE_TAIL
 #define lambda_body_macro_h(...) {return __VA_ARGS__;}
 #define lambda_arg_macro_h(x) auto&& x
 #define lambda_macro(...) [=](__VA_OPT__(map_macro(lambda_arg_macro_h, __VA_ARGS__))) lambda_body_macro_h
-#define stringify_macro(x) #x
+#define stringify_macro_h(x) #x
+#define stringify_macro(x) stringify_macro_h(x)
 #define BYTE_SIZE CHAR_BIT
 
 #endif /* MACRO_UTILS_HPP */

@@ -1,16 +1,13 @@
 #include "includes/gamewindow.hpp"
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_render.h"
-#include "SDL2/SDL_video.h"
 
 namespace GameWindow {
-    int KeyBoardLength;
-    const Uint8 * KeyboardState = SDL_GetKeyboardState(&KeyBoardLength);
+    i32 KeyBoardLength;
+    const u8 * KeyboardState = SDL_GetKeyboardState(&KeyBoardLength);
     SDL_Renderer * Renderer;
     SDL_Window * Window;
-    Uint32 WindowFlags;
+    u32 WindowFlags;
     bool _IsRunning = true;
-    void SetFlags(Uint32 flags) {
+    void SetFlags(u32 flags) {
         WindowFlags = flags;
     }
     void Init() {

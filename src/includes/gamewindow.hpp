@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include "intalias.hpp"
 #include "renderable.hpp"
 
 namespace GameWindow {
@@ -11,7 +12,7 @@ namespace GameWindow {
     constexpr auto HalfWidth = Width/2.0f;
     constexpr auto HalfHeight = Height/2.0f;
     static constexpr SDL_Color FlushColor = {0, 0, 255, 255};
-    void SetFlags(Uint32);
+    void SetFlags(i32);
     void Init();
     void DrawBuffer();
     void SetDrawColor(SDL_Color);

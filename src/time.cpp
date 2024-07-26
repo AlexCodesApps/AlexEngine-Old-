@@ -2,12 +2,12 @@
 
 namespace Timer {
     Instance Elapsed;
-    float Delta;
+    f32 Delta;
     void UpdateDeltaTime() {
         Delta = Elapsed.ElapsedTime();
         Elapsed.ResetTime();
     }
-    float DeltaTime() {
+    f32 DeltaTime() {
         return Delta;
     }
 }
