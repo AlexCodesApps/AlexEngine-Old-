@@ -19,7 +19,6 @@ namespace GameWindow {
     void DrawSprite(const RenderableEntity&);
     void DrawSprite(const SDL_FRect&, const Image&);
     bool IsKeyPressed(SDL_Scancode);
-    Vec2 GetInputAxis();
     SDL_Renderer * GetRenderer();
     void PollEvents();
     bool IsRunning();

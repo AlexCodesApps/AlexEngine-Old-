@@ -17,6 +17,6 @@ namespace Timer {
             return static_cast<f32>(ElapsedTicks())/1000.0f;
         }
     };
-    extern void UpdateDeltaTime();
-    extern f32 DeltaTime();
+    void UpdateDeltaTime();
+    f32 DeltaTime();
 }

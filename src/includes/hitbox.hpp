@@ -1,3 +1,7 @@
+#ifndef HITBOX_HPP
+#define HITBOX_HPP
+
+
 #include "SDL2/SDL_rect.h"
 #include "vec2.hpp"
 
@@ -10,3 +14,5 @@ namespace Hitbox {
     bool TilePositionColliding16(Vec2);
     bool TilePositionColliding(const Vec2&, const Dimensions&);
 }
+
+#endif /* HITBOX_HPP */

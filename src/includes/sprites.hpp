@@ -19,9 +19,9 @@ public:
     static void Remove(ID);
     static ID New(SDL_FRect = {0, 0, 16, 16}, Image = Asset::ImageID::undefined, u8 = 0);
     static void DestroyAll();
-    static constexpr u64 NULL_ID = 0;
+    static constexpr u64 null_id = 0;
     class Auto {
-        ID Tag = NULL_ID;
+        ID Tag = null_id;
         public:
         Auto();
         ~Auto();
@@ -31,11 +31,11 @@ public:
         Auto& operator=(const Auto&) = delete;
         Auto Clone();
         Sprite& GetMut();
-        const Sprite& Get()
-;        ID ID();
+        const Sprite& Get();
+        ID ID();
     };
     // class Ref {
-    //     ID Tag = NULL_ID;
+    //     ID Tag = null_id;
     // public:
     //     Ref() = default;
     //     Ref(ID);

@@ -8,6 +8,7 @@ namespace Tilemap {
     void Next();
     bool PositionIsSolid(Vec2);
     bool TilePositionIsSolid(SDL_Point);
+    u8  GetTileID(SDL_Point);
     i32 MapWorldF(f32);
     SDL_Point MapWorldF(Vec2);
 }

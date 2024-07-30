@@ -25,5 +25,5 @@ bool Hitbox::TilePositionColliding(const Vec2& Position, const Dimensions& Hitbo
     return Tilemap::PositionIsSolid(BasePosition)
     || Tilemap::PositionIsSolid({Offset.x, BasePosition.y})
     || Tilemap::PositionIsSolid({BasePosition.x, Offset.y})
-|| Tilemap::PositionIsSolid(Offset);
+    || Tilemap::PositionIsSolid(Offset);
 }

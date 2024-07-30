@@ -35,14 +35,6 @@ namespace GameWindow {
         if (Key >= KeyBoardLength) return false;
         return KeyboardState[Key];
     }
-    Vec2 GetInputAxis() {
-        Vec2 ReturnAxis{};
-        if (KeyboardState[SDL_SCANCODE_UP]) ReturnAxis.y -= 1;
-        if (KeyboardState[SDL_SCANCODE_DOWN]) ReturnAxis.y += 1;
-        if (KeyboardState[SDL_SCANCODE_LEFT]) ReturnAxis.x -= 1;
-        if (KeyboardState[SDL_SCANCODE_RIGHT]) ReturnAxis.x += 1;
-        return ReturnAxis;
-    }
     SDL_Renderer * GetRenderer() {
         return Renderer;
     }

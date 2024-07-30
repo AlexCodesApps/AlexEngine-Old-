@@ -1,43 +1,32 @@
 #define DEBUG
-#include <bitset>
+#include "includes/entity_resv.hpp"
 #include "includes/gamewindow.hpp"
 #include "includes/player.hpp"
 #include "includes/sprites.hpp"
-#include "includes/macros/debug.hpp"
-#include "includes/hitbox.hpp"
 #include <algorithm>
+#include <utility>
 #include <cstdlib>
-#include <vector>
 
 namespace {
-    using SprBitSet = std::bitset<8>;
-    using SprEntry = std::tuple<Sprite::ID, Sprite, SprBitSet>;
-    std::vector<SprEntry> GlobalMap;
-    Sprite::ID IDCounter = 1;
+    EntityResv<Sprite, Sprite::ID, [](auto& p1, auto& p2) {
+        if (p1.second.Layer > p2.second.Layer) {
+            return true;
+        }
+        else if (p1.second.Layer < p2.second.Layer) {
+            return false;
+        }
+        else {
+            return p1.second.ZOffset > p2.second.ZOffset;
+        }
+    }> GlobalMap;
 }
 
 void Sprite::DrawAll() {
-    std::ranges::sort(
-        GlobalMap,
-        [](SprEntry& f, SprEntry& s) {
-            if (std::get<Sprite>(f).Layer > std::get<Sprite>(s).Layer) {
-                return true;
-            }
-            else if (std::get<Sprite>(f).Layer < std::get<Sprite>(s).Layer) {
-                return false;
-            }
-            else {
-                return std::get<Sprite>(f).ZOffset > std::get<Sprite>(s).ZOffset;
-            }
-        }
-    );
-    for (auto& [_, sprite, bits] : GlobalMap) {
+    GlobalMap.Sort();
+    for (auto& [_, sprite] : GlobalMap) {
         auto RenderedPosition = Player::Camera::GetRelativePosition(sprite.Body);
-        if (bits.none()) {
-            sprite.Entity.Body.w = sprite.Body.w * sprite.Scale;
-            sprite.Entity.Body.h = sprite.Body.h * sprite.Scale;
-        }
-        else bits[0] = 1;
+        sprite.Entity.Body.w = sprite.Body.w * sprite.Scale;
+        sprite.Entity.Body.h = sprite.Body.h * sprite.Scale;
         sprite.Entity.Body.x = RenderedPosition.x;
         sprite.Entity.Body.y = RenderedPosition.y;
         GameWindow::DrawSprite(sprite.Entity);
@@ -45,74 +34,50 @@ void Sprite::DrawAll() {
 }
 
 Sprite::ID Sprite::New(SDL_FRect _Body, Image _IMG, u8 _Layer) {
-    auto NID = IDCounter++;
-    GlobalMap.emplace_back(NID, Sprite{
+    return GlobalMap.New(Sprite{
         .Entity = RenderableEntity(_IMG, {}),
         .Body = _Body,
         .Layer = _Layer
-    }, 0);
-    return NID;
+    });
 }
 
 void Sprite::Remove(ID RID) {
-    auto iter = std::remove_if(
-        GlobalMap.begin(),
-        GlobalMap.end(),
-        [=](SprEntry& p) {
-            return std::get<Sprite::ID>(p) == RID;
-        }
-    );
-    if (iter != GlobalMap.end())
-        GlobalMap.erase(iter);
+    GlobalMap.Remove(RID);
 }
 
-namespace {
-
-SprEntry& _internalGet(Sprite::ID GID) {
-    auto iter
-        = std::ranges::find_if(
-            GlobalMap,
-            [=](SprEntry& p) {
-                return std::get<Sprite::ID>(p) == GID;
-            }
-        );
-    if (iter != GlobalMap.end()) return *iter;
-    DEBUG_ERROR("Invalid Sprite ID Access");
-}
-
-}
 const Sprite& Sprite::Get(ID GID) {
-    return std::get<Sprite>(_internalGet(GID));
+    return GlobalMap.Get(GID);
 }
 
 Sprite& Sprite::GetMut(ID GID) {
-    SprEntry& Ref = _internalGet(GID);
-    std::get<SprBitSet>(Ref).reset();
-    return std::get<Sprite>(Ref);
+    return GlobalMap.Get(GID);
 }
 
 void Sprite::DestroyAll() {
-    GlobalMap.clear();
+    GlobalMap.GetContainer().clear();
 }
 
 Sprite::Auto::Auto()
 : Tag(Sprite::New()) {}
 Sprite::Auto::Auto(Sprite::Auto&& rhs)
-: Tag(rhs.Tag) {rhs.Tag = NULL_ID;}
+: Tag(rhs.Tag) {rhs.Tag = null_id;}
 Sprite::Auto::~Auto() {
-    if (Tag != NULL_ID) {
+    if (Tag != null_id) {
         Sprite::Remove(Tag);
     }
 }
+
 Sprite::Auto& Sprite::Auto::operator=(Sprite::Auto&& rhs) {
     std::swap(Tag, rhs.Tag);
     return *this;
 }
+
 Sprite::Auto Sprite::Auto::Clone() {
     Sprite::Auto NewSprite;
     NewSprite.GetMut() = GetMut();
     return NewSprite;
 }
+
 Sprite& Sprite::Auto::GetMut() {
     return Sprite::GetMut(Tag);
 }

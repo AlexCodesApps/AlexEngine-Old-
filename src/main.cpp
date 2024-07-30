@@ -1,4 +1,5 @@
 #define DEBUG
+#include "includes/physics.hpp"
 #include "includes/tilemap.hpp"
 #include "includes/sprites.hpp"
 #include "includes/player.hpp"
@@ -19,6 +20,7 @@ i32 main() {
     Tilemap::Load();
     while (GameWindow::IsRunning()) {
         Player::Update();
+        Physics::Inst::Update();
         Sprite::DrawAll();
         GameWindow::PollEvents();
         GameWindow::DrawBuffer();

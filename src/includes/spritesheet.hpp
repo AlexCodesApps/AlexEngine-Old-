@@ -5,7 +5,7 @@
 #include <cstddef>
 
 struct SpriteSheet {
-    typedef SDL_Point Coordinates;
+    using Coordinates = SDL_Point;
     Image IMG;
     i32 TileSize = 16;
     i32 TileWidth;
