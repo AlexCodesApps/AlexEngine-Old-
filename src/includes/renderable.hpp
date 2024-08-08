@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_image.h>
-#include <cstddef>
 #include "assets.hpp"
 #include "vec2.hpp"
 
@@ -10,14 +9,14 @@ struct Image {
     SDL_Rect Dimensions = {};
     Image() = default;
     Image(Asset::ImageID);
-    Image(Asset::ImageID, const SDL_Rect&);
+    Image(Asset::ImageID, SDL_Rect);
 };
 
 struct RenderableEntity {
     Image IMG;
     SDL_FRect Body;
     RenderableEntity() = default;
-    RenderableEntity(Image, SDL_FRect);
+    RenderableEntity(const Image&, const SDL_FRect&);
     SDL_FRect TranslateLocation(Vec2);
     void SetLocation(Vec2);
     void ChangeLocation(Vec2);

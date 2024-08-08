@@ -23,4 +23,5 @@ namespace GameWindow {
     void PollEvents();
     bool IsRunning();
     void Destroy();
+    void ForceQuit();
 }

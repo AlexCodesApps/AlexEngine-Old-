@@ -1,95 +1,104 @@
 #include "includes/physics.hpp"
+#include "SDL2/SDL_rect.h"
 #include "includes/entity_resv.hpp"
-#include "includes/macros/macro_utils.hpp"
+#include "includes/hitbox.hpp"
 #include "includes/renderable.hpp"
+#include "includes/sprites.hpp"
 #include "includes/time.hpp"
 #include "includes/vec2.hpp"
 #include <utility>
 
 namespace {
-    EntityResv<Physics::Inst, Physics::Inst::ID> PhysicsSprites;
+    EntityResv<Physics::Entity, Physics::Entity::ID> PhysicsSprites;
     using PhysIDPair = decltype(PhysicsSprites)::value_type;
 }
 namespace Physics {
-    Inst::ID Inst::New() {
+    Entity::ID Entity::New(Sprite::Ref Ref, const Data& Data) {
+        return PhysicsSprites.New(Entity{
+            .PhysData = Data,
+            .SpriteRef = Ref,
+        });
+    }
+    Entity::ID Entity::New(const Entity& Ref) {
+        return PhysicsSprites.New(Ref);
+    }
+    Entity::ID Entity::New() {
         return PhysicsSprites.New();
     }
-    Inst& Inst::Get(ID GID) {
+    Entity& Entity::Get(ID GID) {
         return PhysicsSprites.Get(GID);
     }
-    void Inst::Remove(ID RID) {
+    void Entity::Remove(ID RID) {
         PhysicsSprites.Remove(RID);
     }
-    void Inst::Update() {
+    void Entity::Update() {
         PhysicsSprites.Foreach([](PhysIDPair& phys1) {
-            if (phys1.second.data.Flags & ENUM_TO_INT(Data::Bit::Immobile)) return;
-            auto& spr1 = phys1.second.spr.GetMut();
+            if (phys1.second.PhysData.Flags & std::to_underlying(Data::Bit::Immobile)) return;
+            auto& spr1 = phys1.second.SpriteRef.GetMut();
             Vec2 spr1_velocity_position = {
-                spr1.Body.x + (phys1.second.data.Velocity.x * Timer::DeltaTime()),
-                spr1.Body.y + (phys1.second.data.Velocity.y * Timer::DeltaTime())
+                spr1.Body.x + (phys1.second.PhysData.Velocity.x * Timer::DeltaTime()),
+                spr1.Body.y + (phys1.second.PhysData.Velocity.y * Timer::DeltaTime())
             };
-            phys1.second.data.Flags &= ~u8(ENUM_TO_INT(Data::Bit::CollisionLeft) |
-                                           ENUM_TO_INT(Data::Bit::CollisionRight)|
-                                           ENUM_TO_INT(Data::Bit::CollisionUp)   |
-                                           ENUM_TO_INT(Data::Bit::CollisionDown));
-            phys1.second.data.Velocity.x += (phys1.second.data.Acceleration.x * Timer::DeltaTime());
-            phys1.second.data.Velocity.y += (phys1.second.data.Acceleration.y * Timer::DeltaTime());
+            phys1.second.PhysData.Flags &= ~u8(std::to_underlying(Data::Bit::CollisionLeft) |
+                                           std::to_underlying(Data::Bit::CollisionRight)|
+                                           std::to_underlying(Data::Bit::CollisionUp)   |
+                                           std::to_underlying(Data::Bit::CollisionDown) |
+                                           std::to_underlying(Data::Bit::CollidingDangerous));
+            phys1.second.PhysData.Velocity.x += (phys1.second.PhysData.Acceleration.x * Timer::DeltaTime());
+            phys1.second.PhysData.Velocity.y += (phys1.second.PhysData.Acceleration.y * Timer::DeltaTime());
             PhysicsSprites.Foreach([&phys1, &spr1, &spr1_velocity_position](PhysIDPair& phys2) {
                 if (phys1.first == phys2.first
-                || (phys1.second.data.Flags & ENUM_TO_INT(Data::Bit::Ghost))
-                || (phys2.second.data.Flags & ENUM_TO_INT(Data::Bit::Ghost))) return;
-                const auto& spr2 = phys2.second.spr.Get();
+                || (phys1.second.PhysData.Flags & std::to_underlying(Data::Bit::Ghost))
+                || (phys2.second.PhysData.Flags & std::to_underlying(Data::Bit::Ghost))) return;
+                const auto& spr2 = phys2.second.SpriteRef.Get();
                 const Vec2 spr2_position = {spr2.Body.x, spr2.Body.y};
-                const SDL_FRect spr2_hitbox_body = phys2.second.data.HitboxToRect(spr2_position);
+                const SDL_FRect spr2_hitbox_body = phys2.second.PhysData.HitboxToRect(spr2_position);
                 if (!Hitbox::IsColliding(
-                    phys1.second.data.HitboxToRect(spr1_velocity_position),
+                    phys1.second.PhysData.HitboxToRect(spr1_velocity_position),
                     spr2_hitbox_body)) {
                     return;
                 }
-                const SDL_FRect XHitboxTest = phys1.second.data.HitboxToRect({
+                if (phys2.second.PhysData.Flags & std::to_underlying(Data::Bit::Dangerous)) {
+                    phys1.second.PhysData.Flags |= std::to_underlying(Data::Bit::CollidingDangerous);
+                }
+                const SDL_FRect XHitboxTest = phys1.second.PhysData.HitboxToRect({
                     spr1_velocity_position.x,
                     spr1.Body.y
                 });
-                const SDL_FRect YHitboxTest = phys1.second.data.HitboxToRect({
+                const SDL_FRect YHitboxTest = phys1.second.PhysData.HitboxToRect({
                     spr1.Body.x,
                     spr1_velocity_position.y
                 });
                 if (Hitbox::IsColliding(XHitboxTest, spr2_hitbox_body)) {
-                    if (phys1.second.data.Velocity.x > 0.0f) {
-                        phys1.second.data.Flags |= ENUM_TO_INT(Data::Bit::CollisionRight);
+                    if (phys1.second.PhysData.Velocity.x > 0.0f) {
+                        phys1.second.PhysData.Flags |= std::to_underlying(Data::Bit::CollisionRight);
                     }
                     else {
-                        phys1.second.data.Flags |= ENUM_TO_INT(Data::Bit::CollisionLeft);
+                        phys1.second.PhysData.Flags |= std::to_underlying(Data::Bit::CollisionLeft);
                     }
                     spr1_velocity_position.x = spr1.Body.x;
-                    phys1.second.data.Velocity.x = 0;
+                    phys1.second.PhysData.Velocity.x = 0;
                 }
                 if (Hitbox::IsColliding(YHitboxTest, spr2_hitbox_body)) {
-                    if (phys1.second.data.Velocity.y > 0.0f) {
-                        phys1.second.data.Flags |= ENUM_TO_INT(Data::Bit::CollisionDown);
+                    if (phys1.second.PhysData.Velocity.y > 0.0f) {
+                        phys1.second.PhysData.Flags |= std::to_underlying(Data::Bit::CollisionDown);
                     }
                     else {
-                        phys1.second.data.Flags |= ENUM_TO_INT(Data::Bit::CollisionUp);
+                        phys1.second.PhysData.Flags |= std::to_underlying(Data::Bit::CollisionUp);
                     }
                     spr1_velocity_position.y = spr1.Body.y;
-                    phys1.second.data.Velocity.y = 0;
+                    phys1.second.PhysData.Velocity.y = 0;
                 }
             });
             SDL_FRectSetXY(spr1.Body, spr1_velocity_position);
         });
     }
-    Inst Inst::Clone() {
-        return Inst {
-            .data = data,
-            .spr = spr.Clone()
-        };
-    }
-
-    Auto::Auto() {
-        Tag = Inst::New();
-    }
-    Auto::Auto(Inst::ID Tag)
+    Auto::Auto(Entity::ID Tag)
     : Tag(Tag) {}
+    Auto::Auto()
+    : Tag(Entity::New(Sprite::New(), {})) {}
+    Auto::Auto(Sprite::Ref Ref, const Data& Data)
+    : Tag(Entity::New(Ref, Data)) {}
     Auto::Auto(Auto&& Ref)
     : Tag(std::exchange(Ref.Tag, ENTITY_RESV_NULL_ID)) {}
     Auto::~Auto() {
@@ -101,12 +110,10 @@ namespace Physics {
         std::swap(Tag, Ref.Tag);
         return *this;
     }
-    Inst& Auto::Get() {
-        return Inst::Get(Tag);
+    Entity& Auto::Get() {
+        return Entity::Get(Tag);
     }
-    Auto Auto::Clone() {
-        Inst::ID NewInst = Inst::New();
-        Inst::Get(NewInst) = Get().Clone();
-        return {NewInst};
+    Auto Auto::Clone(Sprite::Ref Ref) {
+        return Auto(Entity::New(Ref, Get().PhysData));
     }
 }

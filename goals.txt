@@ -2,8 +2,8 @@
 2. Redo The Texture System In A Much More Sane Way ✓
 3. Get Hitboxes, And A Proper Collision System Working ✓
 4. Implement Sprite Layering ✓
-5. Create Basic Physics System To Handle | Collisions, Acceleration, Gravity, ect.
-6. Make Functional Demo
+5. Create Basic Physics System To Handle | Collisions, Acceleration, Gravity, ect. ✓
+6. Make Functional Demo ✓
 7. Create Hazards
 8. Create Enemies
 

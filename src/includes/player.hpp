@@ -16,7 +16,7 @@ namespace Player {
         extern Direction CurrentDirection;
     };
     namespace Camera {
-        Vec2 GetRelativePosition(SDL_FRect);
+        Vec2 GetRelativePosition(const SDL_FRect&);
     }
     constexpr f32 Speed = 30.0f;
     Vec2 GetPosition();
@@ -24,4 +24,5 @@ namespace Player {
     void ChangePosition(Vec2);
     void UpdateAnimation();
     void Update();
+    bool OnLuckyBlock();
 }

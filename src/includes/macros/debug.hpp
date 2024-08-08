@@ -1,9 +1,9 @@
 #ifndef DEBUG_HPP
 #define DEBUG_HPP
-#include "macro_utils.hpp" // IWYU pragma: keep
-#include "text_color.hpp" // IWYU pragma: keep
 #include <print>
 #include <exception> // IWYU pragma: keep
+#include "macro_utils.hpp" // IWYU pragma: keep
+#include "text_color.hpp" // IWYU pragma: keep
 #define get_first_macro(x, ...) x
 #ifdef DEBUG
 #define DEBUG_COLOR_PRINT(colors, x, ...) do { \

@@ -21,7 +21,7 @@ private:
         for (auto& e : Resv) {
             if (e.first == GID) return e.second;
         }
-        DEBUG_ERROR("INVALID ACCESS");
+        DEBUG_ERROR("INVALID ACCESS AT : {}", GID);
     }
 public:
     using container_type = decltype(Resv);
@@ -57,7 +57,7 @@ public:
     }
     void Sort() {
         if constexpr (SortExists) {
-            std::ranges::sort(Resv, Sorter);
+            std::sort(Resv.begin(), Resv.end(), Sorter);
         }
     }
     void Sort(auto&& F) {
@@ -71,6 +71,11 @@ public:
     }
     auto end() -> decltype(Resv.end()) {
         return Resv.end();
+    }
+    bool Valid(ID GID) {
+        return std::find_if(Resv.begin(), Resv.end(), [GID](auto& pred) {
+            return pred.first == GID;
+        }) != Resv.end();
     }
 };
 constexpr u8 ENTITY_RESV_NULL_ID = 0;

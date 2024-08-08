@@ -20,7 +20,12 @@ i32 main() {
     Tilemap::Load();
     while (GameWindow::IsRunning()) {
         Player::Update();
-        Physics::Inst::Update();
+        Physics::Entity::Update();
+        if (Player::OnLuckyBlock()) {
+            if (!Tilemap::IsLastLevel())
+                Tilemap::Next();
+            else GameWindow::ForceQuit();
+        }
         Sprite::DrawAll();
         GameWindow::PollEvents();
         GameWindow::DrawBuffer();

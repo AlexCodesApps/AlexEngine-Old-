@@ -52,4 +52,8 @@ namespace GameWindow {
         SDL_DestroyRenderer(Renderer);
         SDL_Quit();
     }
+
+    void ForceQuit() {
+        _IsRunning = false;
+    }
 }

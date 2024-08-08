@@ -33,12 +33,16 @@ void Sprite::DrawAll() {
     }
 }
 
-Sprite::ID Sprite::New(SDL_FRect _Body, Image _IMG, u8 _Layer) {
+Sprite::ID Sprite::New(const SDL_FRect& _Body, const Image& _IMG, u8 _Layer) {
     return GlobalMap.New(Sprite{
         .Entity = RenderableEntity(_IMG, {}),
         .Body = _Body,
         .Layer = _Layer
     });
+}
+
+Sprite::ID Sprite::New(const Sprite& Ref) {
+    return GlobalMap.New(Ref);
 }
 
 void Sprite::Remove(ID RID) {
@@ -53,16 +57,20 @@ Sprite& Sprite::GetMut(ID GID) {
     return GlobalMap.Get(GID);
 }
 
+bool Sprite::Valid(ID VID) {
+    return GlobalMap.Valid(VID);
+}
+
 void Sprite::DestroyAll() {
     GlobalMap.GetContainer().clear();
 }
 
-Sprite::Auto::Auto()
-: Tag(Sprite::New()) {}
+Sprite::Auto::Auto(const SDL_FRect& Rect, const Image& IMG, u8 Layer)
+: Tag(Sprite::New(Rect, IMG, Layer)) {}
 Sprite::Auto::Auto(Sprite::Auto&& rhs)
-: Tag(rhs.Tag) {rhs.Tag = null_id;}
+: Tag(rhs.Tag) {rhs.Tag = ENTITY_RESV_NULL_ID;}
 Sprite::Auto::~Auto() {
-    if (Tag != null_id) {
+    if (Tag != ENTITY_RESV_NULL_ID) {
         Sprite::Remove(Tag);
     }
 }
@@ -86,6 +94,25 @@ const Sprite& Sprite::Auto::Get() {
     return Sprite::Get(Tag);
 }
 
-Sprite::ID Sprite::Auto::ID() {
+Sprite::ID Sprite::Auto::GetID() {
+    return Tag;
+}
+
+Sprite::Ref::Ref(Sprite::ID ID)
+: Tag(ID) {}
+
+const Sprite& Sprite::Ref::Get() {
+    return Sprite::Get(Tag);
+}
+
+Sprite& Sprite::Ref::GetMut() {
+    return Sprite::GetMut(Tag);
+}
+
+bool Sprite::Ref::Valid() {
+    return Sprite::Valid(Tag);
+}
+
+Sprite::ID Sprite::Ref::GetID() {
     return Tag;
 }

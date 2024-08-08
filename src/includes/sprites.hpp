@@ -16,14 +16,15 @@ public:
     u8 Layer = 0;
     static Sprite& GetMut(ID);
     static const Sprite& Get(ID);
+    static bool Valid(ID);
     static void Remove(ID);
-    static ID New(SDL_FRect = {0, 0, 16, 16}, Image = Asset::ImageID::undefined, u8 = 0);
+    static ID New(const SDL_FRect& = {0, 0, 16, 16}, const Image& = Asset::ImageID::undefined, u8 = 0);
+    static ID New(const Sprite&);
     static void DestroyAll();
-    static constexpr u64 null_id = 0;
     class Auto {
-        ID Tag = null_id;
+        ID Tag = 0;
         public:
-        Auto();
+        Auto(const SDL_FRect& = {0, 0, 16, 16}, const Image& = Asset::ImageID::undefined, u8 = 0);
         ~Auto();
         Auto(Auto&&);
         Auto& operator=(Auto&&);
@@ -32,17 +33,19 @@ public:
         Auto Clone();
         Sprite& GetMut();
         const Sprite& Get();
-        ID ID();
+        ID GetID();
     };
-    // class Ref {
-    //     ID Tag = null_id;
-    // public:
-    //     Ref() = default;
-    //     Ref(ID);
-    //     Sprite& Get();
-    //     bool Valid();
-    //     operator bool();
-    // };
+    class Ref {
+        ID Tag = 0;
+    public:
+        Ref() = default;
+        Ref(ID);
+        const Sprite& Get();
+        Sprite& GetMut();
+        bool Valid();
+        operator bool();
+        ID GetID();
+    };
 };
 
 #endif /* SPRITES_HPP */

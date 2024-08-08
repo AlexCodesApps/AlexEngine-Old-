@@ -1,16 +1,9 @@
 #ifndef MACRO_UTILS_HPP
 #define MACRO_UTILS_HPP
-#include "warning_ignore.hpp"
-WARNING_IGNORE_HEADER(-Weverything)
 #include <climits>
 #include <type_traits> // IWYU pragma: keep
-WARNING_IGNORE_TAIL
 #define enumerate_macro(name, ...) enum class name {__VA_ARGS__};
 #define BITOFFSET(x) (1 << x)
-#define ENUM_INT_TYPE(e) std::underlying_type_t<e>
-#define ENUM_TO_INT(e) static_cast<ENUM_INT_TYPE(decltype(e))>(e)
-#define ENUM_SIZE(e) sizeof(ENUM_INT_TYPE(e))
-
 #define concat_macro(x, y) x ## y
 #define expand_concat_macro(x, y) concat_macro(x,y)
 #define unique_name_macro expand_concat_macro(filler__dnu__macro__, __COUNTER__)

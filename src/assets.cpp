@@ -10,7 +10,7 @@
 namespace Asset {
     SDL_Texture * Images[list_size_macro(IMAGES_ALL)];
     #define LOAD_IMAGE(x) { \
-        constexpr auto address = ENUM_TO_INT(ImageID::x); \
+        constexpr auto address = std::to_underlying(ImageID::x); \
         Images[address] = IMG_LoadTexture(Renderer, IMAGE_FILE(x)); \
         if (!Images[address]) { \
             DEBUG_EXPAND(DestroyAll()); \
@@ -23,7 +23,7 @@ namespace Asset {
         return true;
     };
     SDL_Texture * GetTexture(ImageID IMG_N) {
-        return Images[ENUM_TO_INT(IMG_N)];
+        return Images[std::to_underlying(IMG_N)];
     }
     void DestroyAll() {
         for (auto Image : Images) {

@@ -5,10 +5,10 @@ Image::Image(Asset::ImageID ID)
     SDL_QueryTexture(Asset::GetTexture(ID), NULL, NULL, &Dimensions.w, &Dimensions.h);
 }
 
-Image::Image(Asset::ImageID ID, const SDL_Rect& Dims)
+Image::Image(Asset::ImageID ID, SDL_Rect Dims)
 : ID(ID), Dimensions(Dims) {}
 
-RenderableEntity::RenderableEntity(Image _IMG, SDL_FRect _Body)
+RenderableEntity::RenderableEntity(const Image& _IMG, const SDL_FRect& _Body)
 : IMG(_IMG), Body(_Body) {}
 
 SDL_FRect RenderableEntity::TranslateLocation(Vec2 NewLoc) {
